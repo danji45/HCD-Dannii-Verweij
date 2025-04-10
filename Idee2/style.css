@@ -1,0 +1,36 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.textveld {
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    padding: 2em;
+    font-size: 1em;
+    width: 8em;
+    background-color: rgb(143, 170, 170);
+    margin: 1em;
+    cursor: pointer;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    background-color: #f0f0f0;
+    padding: 10px;
+}
