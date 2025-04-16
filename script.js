@@ -6,13 +6,14 @@ let letterModus = false;
 let actieveSet = null;
 
 let origineleTeksten = [
-    "a b c d e f",
-    "g h i j k l",
-    "m n o p q r",
-    "s t u v w x",
-    "y z 1 2 3 4",
-    "5 6 7 8 9 ."
+    "a b<br>c d<br>e f",
+    "g h<br>i j<br>k l",
+    "m n<br>o p<br>q r",
+    "s t<br>u v<br>w x",
+    "y z<br>1 2<br>3 4",
+    "5 6<br>7 8<br>9 ."
 ];
+
 
 const letterSets = {
     0: ['a', 'b', 'c', 'd', 'e', 'f'],
@@ -41,9 +42,11 @@ buttons.forEach((btn, index) => {
 
             // Reset knoppen
             buttons.forEach((b, i) => {
-                b.textContent = origineleTeksten[i];
+                b.innerHTML = origineleTeksten[i];
+
             });
             letterModus = false;
+            
             actieveSet = null;
         }
 
