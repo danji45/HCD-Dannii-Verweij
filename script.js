@@ -23,10 +23,10 @@ const letterSets = {
     5: ['5', '6', '7', '8', '9', '.']
 };
 
+
 // Klik op een knop
 buttons.forEach((btn, index) => {
     btn.addEventListener('click', () => {
-        // Zet knoppen om naar hun letterset als je niet al in lettermodus zit
         if (!letterModus) {
             actieveSet = letterSets[index];
             if (actieveSet) {
@@ -36,10 +36,10 @@ buttons.forEach((btn, index) => {
                 letterModus = true;
             }
         } else {
-            // Als je al in lettermodus bent, voeg de letter toe aan het tekstveld
+            // Voeg letter toe
             textveld.value += btn.textContent;
 
-            // Zet knoppen terug naar begin
+            // Reset knoppen
             buttons.forEach((b, i) => {
                 b.textContent = origineleTeksten[i];
             });
@@ -47,64 +47,35 @@ buttons.forEach((btn, index) => {
             actieveSet = null;
         }
 
-        // Highlight de laatst toegevoegde rij
+        // Highlight laatste rij (optioneel)
         highlightLastRow();
     });
 });
 
-// Klik op lege ruimte = spatie of backspace, afhankelijk van waar je klikt
+// Klik op lege ruimte
 parentDiv.addEventListener('click', (e) => {
-    // Bereken de middenpositie van de lege ruimte
     const rect = parentDiv.getBoundingClientRect();
     const midden = rect.left + rect.width / 8;
-    
-    // Als je niet op een knop klikt
+
     if (!e.target.closest('button')) {
         if (e.clientX > midden) {
-            // Voeg spatie toe aan de tekst
             textveld.value += ' ';
-
-            // Verander de achtergrondkleur naar groen
             parentDiv.style.backgroundColor = '#c0f6b9';
-
-            // Zet de kleur terug na 300ms
-            setTimeout(() => {
-                parentDiv.style.backgroundColor = '#f0f0f0';
-            }, 150);
-        } else { 
-
-            
-            // Doe backspace als je rechts van het midden klikt
+        } else {
             textveld.value = textveld.value.slice(0, -1);
-
-            // Verander de achtergrondkleur naar rood
             parentDiv.style.backgroundColor = '#ebb0b0';
-
-            // Zet de kleur terug na 300ms
-            setTimeout(() => {
-                parentDiv.style.backgroundColor = '#f0f0f0';
-            }, 150);
         }
 
-        // Highlight de laatst toegevoegde rij
+        setTimeout(() => {
+            parentDiv.style.backgroundColor = '#f0f0f0';
+        }, 150);
+
         highlightLastRow();
     }
 });
 
-// Functie voor het highlighten van de laatste rij
+// Optioneel: highlight functie (werkt niet direct visueel in textarea, maar laten we het staan)
 function highlightLastRow() {
-    // Verkrijg de waarde van het tekstveld
-    let tekst = textveld.value;
-
-    // Splits de tekst in rijen op basis van de nieuwe regel (\n)
-    let regels = tekst.split('\n');
-
-    // Verkrijg de laatste rij
-    let laatsteRij = regels[regels.length - 1];
-
-    // Voeg de highlight toe aan de laatste rij
-    tekst = regels.slice(0, -1).join('\n') + '\n' + `<mark style="background-color: yellow;">${laatsteRij}</mark>`;
-
-    // Zet de waarde van het tekstveld weer in de juiste opmaak
-    textveld.innerHTML = tekst;
+    // Tekst highlight werkt niet visueel in textarea zonder complexere HTML-structuur.
+    // Je zou dit visueel moeten maken met contenteditable of overlay — voorlopig laten we dit als placeholder.
 }

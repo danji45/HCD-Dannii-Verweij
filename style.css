@@ -2,29 +2,51 @@ html, body {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
 .container {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    align-items: center; /* toegevoegd om de inhoud horizontaal te centreren */
     height: 100%;
     padding: 10px;
     box-sizing: border-box;
+
+    
 }
 
+
 .textveld {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
     padding: 10px;
     font-size: 16px;
+    border: none;
+    outline: none;
+    z-index: 0;
+    background-color: white;
+    color: black;
+    box-sizing: border-box;
+    text-align: left;
 }
+
+
 
 button {
     padding: 2em;
     font-size: 1em;
     width: 8em;
-    background-color: rgb(143, 170, 170);
-    margin: 1em;
+    background-color: rgb(137, 240, 235);
+    margin: 2em;
     cursor: pointer;
+    height: 7em;
 }
 
 .parent {
@@ -33,4 +55,44 @@ button {
     grid-template-rows: repeat(3, 1fr);
     background-color: #f0f0f0;
     padding: 10px;
+    height: 62%;
+    position: relative;
+    z-index: 1;
 }
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+
+
+.text-weergave {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1.4;
+    color: black;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.cursor {
+    display: inline-block;
+    width: 1px;
+    background-color: black;
+    animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
