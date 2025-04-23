@@ -27,20 +27,23 @@ const letterSets = {
 
 // Klik op een knop
 buttons.forEach((btn, index) => {
-    let downTime = 0;
+    let holdTimer = null;
+    let longPressed = false;
 
     btn.addEventListener('mousedown', () => {
         if (letterModus) {
-            downTime = Date.now(); // tijdstip van indrukken
+            longPressed = false;
+            holdTimer = setTimeout(() => {
+                longPressed = true;
+            }, 2000); // 2 seconden voor hoofdletter
         }
     });
 
     btn.addEventListener('mouseup', () => {
-        const upTime = Date.now();
-        const duration = upTime - downTime;
+        clearTimeout(holdTimer);
 
         if (!letterModus) {
-            // Eerste klik op knop: activeer lettermodus
+            // Eerste klik activeert lettermodus
             actieveSet = letterSets[index];
             if (actieveSet) {
                 buttons.forEach((b, i) => {
@@ -49,27 +52,36 @@ buttons.forEach((btn, index) => {
                 letterModus = true;
             }
         } else {
-            // In lettermodus: voeg letter toe (hoofdletter als lang indrukken)
+            // Tweede klik: letter invoegen
             let letter = btn.textContent;
 
-            if (duration >= 2000) {
-                letter = letter.toUpperCase();
-            }
+            // LET OP: longPressed kan pas true zijn NA timeout
+            // Dus we wachten eventjes voordat we doorgaan, om zeker te zijn
+            setTimeout(() => {
+                if (longPressed) {
+                    letter = letter.toUpperCase();
+                }
 
-            textveld.innerText += letter;
+                textveld.innerText += letter;
 
-            // Reset naar originele knoppen
-            buttons.forEach((b, i) => {
-                b.innerHTML = origineleTeksten[i];
-            });
+                // Reset knoppen
+                buttons.forEach((b, i) => {
+                    b.innerHTML = origineleTeksten[i];
+                });
 
-            letterModus = false;
-            actieveSet = null;
+                letterModus = false;
+                actieveSet = null;
+
+                highlightLastRow();
+            }, 10); // mini-wacht, zodat setTimeout van longPressed een kans heeft gehad
         }
+    });
 
-        highlightLastRow();
+    btn.addEventListener('mouseleave', () => {
+        clearTimeout(holdTimer);
     });
 });
+
 
 
 // Klik op lege ruimte
