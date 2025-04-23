@@ -27,20 +27,17 @@ const letterSets = {
 
 // Klik op een knop
 buttons.forEach((btn, index) => {
-    let holdTimer;
-    let wasLongPress = false;
+    let downTime = 0;
 
     btn.addEventListener('mousedown', () => {
         if (letterModus) {
-            wasLongPress = false;
-            holdTimer = setTimeout(() => {
-                wasLongPress = true;
-            }, 2000);
+            downTime = Date.now(); // tijdstip van indrukken
         }
     });
 
     btn.addEventListener('mouseup', () => {
-        clearTimeout(holdTimer);
+        const upTime = Date.now();
+        const duration = upTime - downTime;
 
         if (!letterModus) {
             // Eerste klik op knop: activeer lettermodus
@@ -52,9 +49,10 @@ buttons.forEach((btn, index) => {
                 letterModus = true;
             }
         } else {
-            // We zijn in lettermodus: typ letter (hoofdletter indien long press)
+            // In lettermodus: voeg letter toe (hoofdletter als lang indrukken)
             let letter = btn.textContent;
-            if (wasLongPress) {
+
+            if (duration >= 2000) {
                 letter = letter.toUpperCase();
             }
 
@@ -71,11 +69,8 @@ buttons.forEach((btn, index) => {
 
         highlightLastRow();
     });
-
-    btn.addEventListener('mouseleave', () => {
-        clearTimeout(holdTimer);
-    });
 });
+
 
 // Klik op lege ruimte
 keyboardDiv.addEventListener('click', (e) => {
