@@ -21,7 +21,7 @@ html, body {
 .textveld {
     display: block;
     width: 100%;
-    min-height: 80px;
+    min-height: 34dvh;
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 20px;
@@ -36,13 +36,15 @@ html, body {
 
 
 button {
-    padding: 2em;
+    padding: 9vw;
     font-size: 1em;
-    width: 8em;
+    width: 30vw;
     background-color: rgb(195, 223, 238);
-    margin: 2em;
+    margin: 9vw;
     cursor: pointer;
-    height: 7em;
+    height: 30vw;
+    box-sizing: border-box;
+    z-index: 20;
 }
 
 .keyboard {
@@ -52,7 +54,10 @@ button {
     background-color: #f0f0f0;
     padding: 10px;
     height: 62%;
-    position: relative;
+    position: fixed; /* of 'absolute' als je hem binnen een parent wil positioneren */
+    bottom: 1dvh;
+    left: 0;
+    right: 0;
     z-index: 1;
 }
 
@@ -68,4 +73,42 @@ button {
     50% {
         opacity: 0;
     }
+}
+.keyboard button.big-letter {
+    font-size: 24px; /* Larger font size */
+    font-weight: bold; /* Make it bolder for better visibility */
+}
+
+.keyboard {
+    position: relative;
+}
+
+.keyboard-separator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 12.5%; /* Position at 1/8th of the keyboard width */
+    width: 2px;
+    background-color: #c6c6c6;
+    pointer-events: none; /* Make sure it doesn't interfere with clicks */
+    z-index: 10;
+}
+
+/* Add some labels for backspace and space */
+.backspace-label, .space-label {
+    position: absolute;
+    bottom: 5px;
+    font-size: 10px;
+    color: #ffffff;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.backspace-label {
+    left: 5px;
+}
+
+.space-label {
+    left: calc(12.5% + 5px);
+    z-index: 1; /* Position it next to the space button */
 }

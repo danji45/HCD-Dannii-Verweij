@@ -4,6 +4,7 @@ const keyboardDiv = document.querySelector('.keyboard');
 
 let letterModus = false;
 let actieveSet = null;
+let pressStartTime = 0; // Track when button press started
 
 let origineleTeksten = [
     "a b<br>c d<br>e f",
@@ -13,7 +14,6 @@ let origineleTeksten = [
     "y z<br>1 2<br>3 4",
     "5 6<br>7 8<br>9 ."
 ];
-
 
 const letterSets = {
     0: ['a', 'b', 'c', 'd', 'e', 'f'],
@@ -25,22 +25,31 @@ const letterSets = {
 };
 
 
+
+// Create and append the separator line and labels
+const separator = document.createElement('div');
+separator.className = 'keyboard-separator';
+keyboardDiv.appendChild(separator);
+
+const backspaceLabel = document.createElement('div');
+backspaceLabel.className = 'backspace-label';
+backspaceLabel.textContent = 'Backspace';
+keyboardDiv.appendChild(backspaceLabel);
+
+const spaceLabel = document.createElement('div');
+spaceLabel.className = 'space-label';
+spaceLabel.textContent = 'Space';
+keyboardDiv.appendChild(spaceLabel);
+
 // Klik op een knop
 buttons.forEach((btn, index) => {
-    let holdTimer = null;
-    let longPressed = false;
-
     btn.addEventListener('mousedown', () => {
-        if (letterModus) {
-            longPressed = false;
-            holdTimer = setTimeout(() => {
-                longPressed = true;
-            }, 2000); // 2 seconden voor hoofdletter
-        }
+        pressStartTime = Date.now(); // Record press start time
     });
 
     btn.addEventListener('mouseup', () => {
-        clearTimeout(holdTimer);
+        const pressDuration = Date.now() - pressStartTime;
+        const isLongPress = pressDuration > 500; // Long press threshold (500ms is more responsive than 2000ms)
 
         if (!letterModus) {
             // Eerste klik activeert lettermodus
@@ -48,6 +57,7 @@ buttons.forEach((btn, index) => {
             if (actieveSet) {
                 buttons.forEach((b, i) => {
                     b.textContent = actieveSet[i];
+                    b.classList.add('big-letter'); // Add class for bigger letters
                 });
                 letterModus = true;
             }
@@ -55,34 +65,68 @@ buttons.forEach((btn, index) => {
             // Tweede klik: letter invoegen
             let letter = btn.textContent;
 
-            // LET OP: longPressed kan pas true zijn NA timeout
-            // Dus we wachten eventjes voordat we doorgaan, om zeker te zijn
-            setTimeout(() => {
-                if (longPressed) {
-                    letter = letter.toUpperCase();
-                }
+            if (isLongPress) {
+                letter = letter.toUpperCase();
+            }
 
-                textveld.innerText += letter;
+            textveld.innerText += letter;
 
-                // Reset knoppen
-                buttons.forEach((b, i) => {
-                    b.innerHTML = origineleTeksten[i];
-                });
+            // Reset knoppen
+            buttons.forEach((b, i) => {
+                b.innerHTML = origineleTeksten[i];
+                b.classList.remove('big-letter'); // Remove class when returning to original state
+            });
 
-                letterModus = false;
-                actieveSet = null;
+            letterModus = false;
+            actieveSet = null;
 
-                highlightLastRow();
-            }, 10); // mini-wacht, zodat setTimeout van longPressed een kans heeft gehad
+            highlightLastRow();
         }
     });
 
-    btn.addEventListener('mouseleave', () => {
-        clearTimeout(holdTimer);
+    // Also handle touch events for mobile devices
+    btn.addEventListener('touchstart', (e) => {
+        pressStartTime = Date.now();
+    });
+
+    btn.addEventListener('touchend', (e) => {
+        const pressDuration = Date.now() - pressStartTime;
+        const isLongPress = pressDuration > 500;
+
+        if (!letterModus) {
+            // First tap activates letter mode
+            actieveSet = letterSets[index];
+            if (actieveSet) {
+                buttons.forEach((b, i) => {
+                    b.textContent = actieveSet[i];
+                    b.classList.add('big-letter'); // Add class for bigger letters
+                });
+                letterModus = true;
+            }
+        } else {
+            // Second tap: insert letter
+            let letter = btn.textContent;
+
+            if (isLongPress) {
+                letter = letter.toUpperCase();
+            }
+
+            textveld.innerText += letter;
+
+            // Reset buttons
+            buttons.forEach((b, i) => {
+                b.innerHTML = origineleTeksten[i];
+                b.classList.remove('big-letter'); // Remove class when returning to original state
+            });
+
+            letterModus = false;
+            actieveSet = null;
+
+            highlightLastRow();
+        }
+        e.preventDefault(); // Prevent default touch behavior
     });
 });
-
-
 
 // Klik op lege ruimte
 keyboardDiv.addEventListener('click', (e) => {
@@ -106,8 +150,8 @@ keyboardDiv.addEventListener('click', (e) => {
     }
 });
 
-// Optioneel: highlight functie (werkt niet direct visueel in textarea, maar laten we het staan)
+// Optioneel: highlight functie
 function highlightLastRow() {
     // Tekst highlight werkt niet visueel in textarea zonder complexere HTML-structuur.
-    // Je zou dit visueel moeten maken met contenteditable of overlay — voorlopig laten we dit als placeholder.
+    // Je zou dit visueel moeten maken met contenteditable of overlay
 }
