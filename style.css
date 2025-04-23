@@ -19,22 +19,18 @@ html, body {
 
 
 .textveld {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    display: block;
     width: 100%;
-    height: 100%;
+    min-height: 80px;
+    border: 1px solid #ccc;
     padding: 10px;
-    font-size: 16px;
-    border: none;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
     outline: none;
-    z-index: 0;
+    font-family: sans-serif;
+    font-size: 16px;
     background-color: white;
-    color: black;
-    box-sizing: border-box;
-    text-align: left;
 }
 
 
@@ -43,13 +39,13 @@ button {
     padding: 2em;
     font-size: 1em;
     width: 8em;
-    background-color: rgb(137, 240, 235);
+    background-color: rgb(195, 223, 238);
     margin: 2em;
     cursor: pointer;
     height: 7em;
 }
 
-.parent {
+.keyboard {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -60,39 +56,16 @@ button {
     z-index: 1;
 }
 
-.overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    background-color: white;
-    padding: 10px;
-    box-sizing: border-box;
-    font-size: 16px;
-    font-family: Arial, sans-serif;
-}
 
 
-
-.text-weergave {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    line-height: 1.4;
-    color: black;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.cursor {
-    display: inline-block;
-    width: 1px;
-    background-color: black;
+.textveld::after {
+    content: "|";
     animation: blink 1s step-start infinite;
+    color: black;
 }
 
 @keyframes blink {
-    50% { opacity: 0; }
+    50% {
+        opacity: 0;
+    }
 }
-

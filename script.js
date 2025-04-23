@@ -1,13 +1,13 @@
-const buttons = document.querySelectorAll('.parent button');
+const buttons = document.querySelectorAll('.keyboard button');
 const textveld = document.querySelector('.textveld');
-const parentDiv = document.querySelector('.parent');
+const keyboardDiv = document.querySelector('.keyboard');
 
 let letterModus = false;
 let actieveSet = null;
 
 let origineleTeksten = [
     "a b<br>c d<br>e f",
-    "g h<br>i j<br>k l",
+    "g   h<br>i j<br>k l",
     "m n<br>o p<br>q r",
     "s t<br>u v<br>w x",
     "y z<br>1 2<br>3 4",
@@ -27,8 +27,23 @@ const letterSets = {
 
 // Klik op een knop
 buttons.forEach((btn, index) => {
-    btn.addEventListener('click', () => {
+    let holdTimer;
+    let wasLongPress = false;
+
+    btn.addEventListener('mousedown', () => {
+        if (letterModus) {
+            wasLongPress = false;
+            holdTimer = setTimeout(() => {
+                wasLongPress = true;
+            }, 2000);
+        }
+    });
+
+    btn.addEventListener('mouseup', () => {
+        clearTimeout(holdTimer);
+
         if (!letterModus) {
+            // Eerste klik op knop: activeer lettermodus
             actieveSet = letterSets[index];
             if (actieveSet) {
                 buttons.forEach((b, i) => {
@@ -37,40 +52,47 @@ buttons.forEach((btn, index) => {
                 letterModus = true;
             }
         } else {
-            // Voeg letter toe
-            textveld.value += btn.textContent;
+            // We zijn in lettermodus: typ letter (hoofdletter indien long press)
+            let letter = btn.textContent;
+            if (wasLongPress) {
+                letter = letter.toUpperCase();
+            }
 
-            // Reset knoppen
+            textveld.innerText += letter;
+
+            // Reset naar originele knoppen
             buttons.forEach((b, i) => {
                 b.innerHTML = origineleTeksten[i];
-
             });
+
             letterModus = false;
-            
             actieveSet = null;
         }
 
-        // Highlight laatste rij (optioneel)
         highlightLastRow();
+    });
+
+    btn.addEventListener('mouseleave', () => {
+        clearTimeout(holdTimer);
     });
 });
 
 // Klik op lege ruimte
-parentDiv.addEventListener('click', (e) => {
-    const rect = parentDiv.getBoundingClientRect();
+keyboardDiv.addEventListener('click', (e) => {
+    const rect = keyboardDiv.getBoundingClientRect();
     const midden = rect.left + rect.width / 8;
 
     if (!e.target.closest('button')) {
         if (e.clientX > midden) {
-            textveld.value += ' ';
-            parentDiv.style.backgroundColor = '#c0f6b9';
+            textveld.innerText += ' ';
+            keyboardDiv.style.backgroundColor = '#c0f6b9';
         } else {
-            textveld.value = textveld.value.slice(0, -1);
-            parentDiv.style.backgroundColor = '#ebb0b0';
+            textveld.innerText = textveld.innerText.slice(0, -1);
+            keyboardDiv.style.backgroundColor = '#ebb0b0';
         }
 
         setTimeout(() => {
-            parentDiv.style.backgroundColor = '#f0f0f0';
+            keyboardDiv.style.backgroundColor = '#f0f0f0';
         }, 150);
 
         highlightLastRow();
