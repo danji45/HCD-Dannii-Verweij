@@ -1,6 +1,8 @@
 const buttons = document.querySelectorAll('.keyboard button');
 const textveld = document.querySelector('.textveld');
 const keyboardDiv = document.querySelector('.keyboard');
+const copyButton = document.querySelector('.copy-button');
+const copyFeedback = document.querySelector('.copy-feedback');
 
 let letterModus = false;
 let actieveSet = null;
@@ -8,7 +10,7 @@ let pressStartTime = 0; // Track when button press started
 
 let origineleTeksten = [
     "a b<br>c d<br>e f",
-    "g   h<br>i j<br>k l",
+    "g h<br>i j<br>k l",
     "m n<br>o p<br>q r",
     "s t<br>u v<br>w x",
     "y z<br>1 2<br>3 4",
@@ -24,22 +26,55 @@ const letterSets = {
     5: ['5', '6', '7', '8', '9', '.']
 };
 
+// Add CSS style for bigger letters
+const style = document.createElement('style');
+style.textContent = `
+    .keyboard button.big-letter {
+        font-size: 24px; /* Larger font size */
+        font-weight: bold; /* Make it bolder for better visibility */
+    }
+`;
+document.head.appendChild(style);
 
+// Copy button functionality
+copyButton.addEventListener('click', () => {
+    const textToCopy = textveld.innerText;
+    
+    // Modern clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => showCopyFeedback('Text copied to clipboard!'))
+            .catch(err => showCopyFeedback('Could not copy text: ' + err));
+    } else {
+        // Fallback for older browsers
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = textToCopy;
+        tempTextArea.style.position = 'absolute';
+        tempTextArea.style.left = '-9999px';
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            const msg = successful ? 'Text copied to clipboard!' : 'Copy failed';
+            showCopyFeedback(msg);
+        } catch (err) {
+            showCopyFeedback('Could not copy text: ' + err);
+        }
+        
+        document.body.removeChild(tempTextArea);
+    }
+});
 
-// Create and append the separator line and labels
-const separator = document.createElement('div');
-separator.className = 'keyboard-separator';
-keyboardDiv.appendChild(separator);
-
-const backspaceLabel = document.createElement('div');
-backspaceLabel.className = 'backspace-label';
-backspaceLabel.textContent = 'Backspace';
-keyboardDiv.appendChild(backspaceLabel);
-
-const spaceLabel = document.createElement('div');
-spaceLabel.className = 'space-label';
-spaceLabel.textContent = 'Space';
-keyboardDiv.appendChild(spaceLabel);
+// Function to show feedback message
+function showCopyFeedback(message) {
+    copyFeedback.textContent = message;
+    copyFeedback.style.display = 'block';
+    
+    setTimeout(() => {
+        copyFeedback.style.display = 'none';
+    }, 2000);
+}
 
 // Klik op een knop
 buttons.forEach((btn, index) => {
@@ -65,7 +100,12 @@ buttons.forEach((btn, index) => {
             // Tweede klik: letter invoegen
             let letter = btn.textContent;
 
-            if (isLongPress) {
+            // Special case for period (.) - long press outputs exclamation mark (!)
+            if (letter === '.' && isLongPress) {
+                letter = '!';
+            } 
+            // For all other letters, capitalize on long press
+            else if (isLongPress) {
                 letter = letter.toUpperCase();
             }
 
@@ -107,7 +147,12 @@ buttons.forEach((btn, index) => {
             // Second tap: insert letter
             let letter = btn.textContent;
 
-            if (isLongPress) {
+            // Special case for period (.) - long press outputs exclamation mark (!)
+            if (letter === '.' && isLongPress) {
+                letter = '!';
+            }
+            // For all other letters, capitalize on long press
+            else if (isLongPress) {
                 letter = letter.toUpperCase();
             }
 

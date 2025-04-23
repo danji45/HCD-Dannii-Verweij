@@ -112,3 +112,37 @@ button {
     left: calc(12.5% + 5px);
     z-index: 1; /* Position it next to the space button */
 }
+
+    /* Copy button styling */
+    .copy-button {
+        position: absolute;
+        top: 31dvh;
+        padding: 0px;
+        background-color: #4CAF50;
+        color: #fff2f2;
+        border: none;
+        border-radius: 9px;
+        cursor: pointer;
+        font-size: 5dvh;
+        width: 45dvh;
+        margin: 0;
+        height: 8dvh;
+    }
+    
+    .copy-button:active {
+        background-color: #3e8e41;
+    }
+    
+    /* Feedback message styling */
+    .copy-feedback {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        display: none;
+        z-index: 100;
+    }
