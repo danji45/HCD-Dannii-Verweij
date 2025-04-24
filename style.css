@@ -1,67 +1,114 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
-.container {
+body {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    align-items: center; /* toegevoegd om de inhoud horizontaal te centreren */
     height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-
-    
 }
-
 
 .textveld {
     display: block;
-    width: 100%;
-    min-height: 34dvh;
+    width: calc(100% - 20px);
+    height: 34vh;
     border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 20px;
+    margin: 10px;
     white-space: pre-wrap;
     word-wrap: break-word;
     outline: none;
     font-family: sans-serif;
     font-size: 16px;
     background-color: white;
+    overflow-y: auto;
 }
 
-
-
-button {
-    padding: 9vw;
-    font-size: 1em;
-    width: 30vw;
-    background-color: rgb(195, 223, 238);
-    margin: 9vw;
+.copy-button {
+    position: relative;
+    margin: 0 auto 15px auto;
+    padding: 15px;  /* Increased padding */
+    background-color: #4CAF50;
+    color: #fff2f2;
+    border: none;
+    border-radius: 12px;  /* Increased border radius */
     cursor: pointer;
-    height: 30vw;
-    box-sizing: border-box;
-    z-index: 20;
+    font-size: 18px;  /* Increased font size */
+    width: 85%;  /* Slightly increased width */
+    max-width: 320px;  /* Increased max width */
+    height: auto;
+}
+
+.copy-button:active {
+    background-color: #3e8e41;
+}
+
+.copy-feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+    z-index: 100;
 }
 
 .keyboard {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 120px);  /* Increased button width */
+    grid-template-rows: repeat(3, 120px);  /* Increased button height */
+    grid-gap: 5dvh 18vw;
     background-color: #f0f0f0;
     padding: 10px;
-    height: 62%;
-    position: fixed; /* of 'absolute' als je hem binnen een parent wil positioneren */
-    bottom: 1dvh;
-    left: 0;
-    right: 0;
-    z-index: 1;
+    flex-grow: 1;
+    position: relative;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+.keyboard button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(195, 223, 238);
+    border: 1px solid #ccc;
+    border-radius: 12px;  /* Increased border radius */
+    cursor: pointer;
+    padding: 8px;  /* Increased padding */
+    font-size: 16px;  /* Increased font size */
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    z-index: 10;
+}
 
+.keyboard button.big-letter {
+    font-size: 28px;  /* Increased font size for big letters */
+    font-weight: bold;
+}
+
+.keyboard-separator {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 12.5%;
+    width: 2px;
+    background-color: #c6c6c6;
+    pointer-events: none;
+    z-index: 1;
+}
 
 .textveld::after {
     content: "|";
@@ -74,75 +121,36 @@ button {
         opacity: 0;
     }
 }
-.keyboard button.big-letter {
-    font-size: 24px; /* Larger font size */
-    font-weight: bold; /* Make it bolder for better visibility */
-}
 
-.keyboard {
-    position: relative;
-}
-
-.keyboard-separator {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 12.5%; /* Position at 1/8th of the keyboard width */
-    width: 2px;
-    background-color: #c6c6c6;
-    pointer-events: none; /* Make sure it doesn't interfere with clicks */
-    z-index: 10;
-}
-
-/* Add some labels for backspace and space */
-.backspace-label, .space-label {
-    position: absolute;
-    bottom: 5px;
-    font-size: 10px;
-    color: #ffffff;
-    pointer-events: none;
-    z-index: 10;
-}
-
-.backspace-label {
-    left: 5px;
-}
-
-.space-label {
-    left: calc(12.5% + 5px);
-    z-index: 1; /* Position it next to the space button */
-}
-
-    /* Copy button styling */
-    .copy-button {
-        position: absolute;
-        top: 31dvh;
-        padding: 0px;
-        background-color: #4CAF50;
-        color: #fff2f2;
-        border: none;
-        border-radius: 9px;
-        cursor: pointer;
-        font-size: 5dvh;
-        width: 45dvh;
-        margin: 0;
-        height: 8dvh;
+@media (max-height: 600px) {
+    .textveld {
+        height: 25vh;
     }
-    
-    .copy-button:active {
-        background-color: #3e8e41;
+
+    .keyboard {
+        grid-template-rows: repeat(3, 90px);  /* Adjusted for smaller screens */
+        grid-gap: 4dvh 5vw;
     }
-    
-    /* Feedback message styling */
-    .copy-feedback {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        display: none;
-        z-index: 100;
+
+    .keyboard button {
+        font-size: 14px;  /* Adjusted font size */
     }
+}
+
+@media (max-width: 350px) {
+    .keyboard {
+        grid-template-columns: repeat(2, 90px);  /* Adjusted for smaller screens */
+        grid-gap: 4dvh 4vw;
+    }
+
+    .keyboard button {
+        font-size: 13px;  /* Adjusted font size */
+    }
+}
+
+@media (min-width: 600px) {
+    .keyboard {
+        grid-template-columns: repeat(2, 140px);  /* Increased for larger screens */
+        grid-template-rows: repeat(3, 140px);  /* Increased for larger screens */
+    }
+}
